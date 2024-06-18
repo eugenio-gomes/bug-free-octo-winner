@@ -99,3 +99,10 @@ def create_earthquake_from_input():
 
     return Earthquake(location, magnitude, affected_area, status, epicenter)
 
+def main():
+    earthquake = create_earthquake_from_input()
+    print(earthquake)
+
+
+if __name__ == '__main__':
+    main()

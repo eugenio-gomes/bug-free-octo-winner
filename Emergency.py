@@ -1,19 +1,33 @@
-class FireEmergency:
-    def __init__(self, location, severity, status):
+class Emergency:
+    def __init__(self, location, status):
         self.location = location
-        self.severity = severity
         self.status = status
 
     def update_status(self, new_status):
         self.status = new_status
         print(f"Status updated to {self.status}")
 
+    def __str__(self):
+        return f"Emergency(location={self.location}, status={self.status})"
+
+    def report_details(self):
+        raise NotImplementedError("Subclasses should implement this method")
+
+
+class FireEmergency(Emergency):
+    def __init__(self, location, severity, status):
+        super().__init__(location, status)
+        self.severity = severity
+
     def update_severity(self, new_severity):
         self.severity = new_severity
         print(f"Severity updated to {self.severity}")
 
-    def __str__(self):
+    def report_details(self):
         return f"FireEmergency(location={self.location}, severity={self.severity}, status={self.status})"
+
+    def __str__(self):
+        return self.report_details()
 
 
 class Explosion(FireEmergency):
@@ -25,22 +39,20 @@ class Explosion(FireEmergency):
         self.intensity = new_intensity
         print(f"Intensity updated to {self.intensity}")
 
-    def __str__(self):
+    def report_details(self):
         return f"Explosion(location={self.location}, intensity={self.intensity}, status={self.status})"
 
+    def __str__(self):
+        return self.report_details()
 
-class NaturalDisaster:
+
+class NaturalDisaster(Emergency):
     def __init__(self, location, magnitude, affected_area, status):
-        self.location = location
+        super().__init__(location, status)
         self.magnitude = magnitude
         self.affected_area = affected_area
-        self.status = status
         self.casualties = 0
         self.infrastructure_damage = {}
-
-    def update_status(self, new_status):
-        self.status = new_status
-        print(f"Status updated to {self.status}")
 
     def assess_damage(self, infrastructure, damage_level):
         self.infrastructure_damage[infrastructure] = damage_level
@@ -54,8 +66,11 @@ class NaturalDisaster:
         total_damage = sum(self.infrastructure_damage.values())
         print(f"Estimated economic impact: {total_damage} million dollars")
 
-    def __str__(self):
+    def report_details(self):
         return f"NaturalDisaster(location={self.location}, magnitude={self.magnitude}, affected_area={self.affected_area}, status={self.status}, casualties={self.casualties}, infrastructure_damage={self.infrastructure_damage})"
+
+    def __str__(self):
+        return self.report_details()
 
 
 class Earthquake(NaturalDisaster):
@@ -71,9 +86,12 @@ class Earthquake(NaturalDisaster):
             print(f"Earthquake caused severe damage to {infrastructure}.")
         super().assess_damage(infrastructure, damage_level)
 
-    def __str__(self):
+    def report_details(self):
         return (f"Earthquake(location={self.location}, magnitude={self.magnitude}, affected_area={self.affected_area}, status={self.status}, "
                 f"epicenter={self.epicenter}, casualties={self.casualties}, infrastructure_damage={self.infrastructure_damage})")
+
+    def __str__(self):
+        return self.report_details()
 
 
 class Storm(NaturalDisaster):
@@ -89,9 +107,12 @@ class Storm(NaturalDisaster):
             print(f"Storm caused severe damage to {infrastructure}.")
         super().assess_damage(infrastructure, damage_level)
 
-    def __str__(self):
+    def report_details(self):
         return (f"Storm(location={self.location}, magnitude={self.magnitude}, affected_area={self.affected_area}, status={self.status}, "
                 f"category={self.category}, casualties={self.casualties}, infrastructure_damage={self.infrastructure_damage})")
+
+    def __str__(self):
+        return self.report_details()
 
 
 # Functions to create emergencies from user input
@@ -103,7 +124,7 @@ def create_earthquake_from_input():
     epicenter = input("Enter the epicenter coordinates of the earthquake: ")
     earthquake = Earthquake(location, magnitude, affected_area, status, epicenter)
     
-    # here i Get casualties
+    # Get casualties
     casualties = int(input("Enter the number of casualties: "))
     earthquake.report_casualties(casualties)
     
@@ -126,7 +147,7 @@ def create_storm_from_input():
     category = input("Enter the category of the storm (e.g., Category 1, Category 2): ")
     storm = Storm(location, magnitude, affected_area, status, category)
     
-    #here i Get casualties
+    # Get casualties
     casualties = int(input("Enter the number of casualties: "))
     storm.report_casualties(casualties)
     

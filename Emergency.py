@@ -69,8 +69,7 @@ class Earthquake(NaturalDisaster):
     def assess_damage(self, infrastructure, damage_level):
         if damage_level == "Severe":
             print(f"Earthquake caused severe damage to {infrastructure}.")
-        else:
-            super().assess_damage(infrastructure, damage_level)
+        super().assess_damage(infrastructure, damage_level)
 
     def __str__(self):
         return (f"Earthquake(location={self.location}, magnitude={self.magnitude}, affected_area={self.affected_area}, status={self.status}, "
@@ -88,22 +87,35 @@ class Storm(NaturalDisaster):
     def assess_damage(self, infrastructure, damage_level):
         if damage_level == "Severe":
             print(f"Storm caused severe damage to {infrastructure}.")
-        else:
-            super().assess_damage(infrastructure, damage_level)
+        super().assess_damage(infrastructure, damage_level)
 
     def __str__(self):
         return (f"Storm(location={self.location}, magnitude={self.magnitude}, affected_area={self.affected_area}, status={self.status}, "
                 f"category={self.category}, casualties={self.casualties}, infrastructure_damage={self.infrastructure_damage})")
 
 
-# Function to create emergencies from user input
+# Functions to create emergencies from user input
 def create_earthquake_from_input():
     location = input("Enter the location of the earthquake: ")
     magnitude = float(input("Enter the magnitude of the earthquake: "))
     affected_area = input("Enter the affected area by the earthquake: ")
     status = input("Enter the status of the earthquake (reported, in progress, resolved): ")
     epicenter = input("Enter the epicenter coordinates of the earthquake: ")
-    return Earthquake(location, magnitude, affected_area, status, epicenter)
+    earthquake = Earthquake(location, magnitude, affected_area, status, epicenter)
+    
+    # here i Get casualties
+    casualties = int(input("Enter the number of casualties: "))
+    earthquake.report_casualties(casualties)
+    
+    # Get damage assessment
+    while True:
+        infrastructure = input("Enter the infrastructure affected (or type 'done' to finish): ")
+        if infrastructure.lower() == 'done':
+            break
+        damage_level = input(f"Enter the damage level for {infrastructure} (e.g., low, moderate, severe): ")
+        earthquake.assess_damage(infrastructure, damage_level)
+    
+    return earthquake
 
 
 def create_storm_from_input():
@@ -112,7 +124,21 @@ def create_storm_from_input():
     affected_area = input("Enter the affected area by the storm: ")
     status = input("Enter the status of the storm (reported, in progress, resolved): ")
     category = input("Enter the category of the storm (e.g., Category 1, Category 2): ")
-    return Storm(location, magnitude, affected_area, status, category)
+    storm = Storm(location, magnitude, affected_area, status, category)
+    
+    #here i Get casualties
+    casualties = int(input("Enter the number of casualties: "))
+    storm.report_casualties(casualties)
+    
+    # Get damage assessment
+    while True:
+        infrastructure = input("Enter the infrastructure affected (or type 'done' to finish): ")
+        if infrastructure.lower() == 'done':
+            break
+        damage_level = input(f"Enter the damage level for {infrastructure} (e.g., low, moderate, severe): ")
+        storm.assess_damage(infrastructure, damage_level)
+    
+    return storm
 
 
 def create_fire_emergency_from_input():
@@ -169,15 +195,19 @@ def main():
         if choice == '1':
             fire_emergency = create_fire_emergency_from_input()
             emergency_manager.add_emergency(fire_emergency)
+            print(fire_emergency)
         elif choice == '2':
             explosion = create_explosion_from_input()
             emergency_manager.add_emergency(explosion)
+            print(explosion)
         elif choice == '3':
             earthquake = create_earthquake_from_input()
             emergency_manager.add_emergency(earthquake)
+            print(earthquake)
         elif choice == '4':
             storm = create_storm_from_input()
             emergency_manager.add_emergency(storm)
+            print(storm)
         elif choice == '5':
             emergency_manager.list_emergencies()
         elif choice == '6':

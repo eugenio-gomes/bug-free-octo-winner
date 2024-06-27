@@ -234,8 +234,37 @@ def main():
         elif choice == '6':
             emergency = emergency_manager.select_emergency()
             if emergency:
-                new_status = input("Enter new status: ")
-                emergency.update_status(new_status)
+                print(f"Current details: {emergency}")
+                print("1. Update status")
+                if isinstance(emergency, FireEmergency):
+                    if isinstance(emergency, Explosion):
+                        print("2. Update intensity")
+                    else:
+                        print("2. Update severity")
+                if isinstance(emergency, NaturalDisaster):
+                    print("3. Report casualties")
+                    print("4. Assess damage")
+                update_choice = input("Enter your choice for update: ")
+                if update_choice == '1':
+                    new_status = input("Enter new status: ")
+                    emergency.update_status(new_status)
+                elif update_choice == '2':
+                    if isinstance(emergency, FireEmergency):
+                        if isinstance(emergency, Explosion):
+                            new_intensity = input("Enter new intensity: ")
+                            emergency.update_intensity(new_intensity)
+                        else:
+                            new_severity = input("Enter new severity: ")
+                            emergency.update_severity(new_severity)
+                elif update_choice == '3' and isinstance(emergency, NaturalDisaster):
+                    num_casualties = int(input("Enter number of casualties: "))
+                    emergency.report_casualties(num_casualties)
+                elif update_choice == '4' and isinstance(emergency, NaturalDisaster):
+                    infrastructure = input("Enter the infrastructure affected: ")
+                    damage_level = input("Enter the damage level (e.g., low, moderate, severe): ")
+                    emergency.assess_damage(infrastructure, damage_level)
+                else:
+                    print("Invalid choice for update.")
         elif choice == '7':
             break
         else:

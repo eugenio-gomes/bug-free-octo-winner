@@ -1,5 +1,5 @@
 import unittest
-from emergency_management import Emergency, FireEmergency, Explosion, NaturalDisaster, Earthquake, Storm, EmergencyManager
+from Emergency.py import Emergency, FireEmergency, Explosion, NaturalDisaster, Earthquake, Storm, EmergencyManager
 
 class TestEmergency(unittest.TestCase):
 

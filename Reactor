@@ -1,0 +1,17 @@
+print("Cálculo das dimensões e custos do reator")
+
+try:
+    # Solicitar os valores ao usuário
+    raio = float(input("Digite o raio do reator (em metros): "))
+    volume_total = float(input("Digite o volume total do reator (em metros cúbicos): "))
+
+    # Verificar se os valores são válidos
+    if raio < 0 or volume_total < 0:
+        print("Erro: O valor do raio e do volume total não podem ser negativos.")
+    else:
+        # Exibir os valores fornecidos
+        print(f"Raio fornecido: {raio:.2f} m")
+        print(f"Volume total fornecido: {volume_total:.2f} m³")
+
+except ValueError:
+    print("Erro: Por favor, insira apenas valores numéricos válidos.")

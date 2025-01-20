@@ -1,0 +1,111 @@
+import random
+import time
+import matplotlib.pyplot as plt
+
+# Sorting algorithms
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        L = arr[:mid]
+        R = arr[mid:]
+
+        merge_sort(L)
+        merge_sort(R)
+
+        i = j = k = 0
+
+        while i < len(L) and j < len(R):
+            if L[i] < R[j]:
+                arr[k] = L[i]
+                i += 1
+            else:
+                arr[k] = R[j]
+                j += 1
+            k += 1
+
+        while i < len(L):
+            arr[k] = L[i]
+            i += 1
+            k += 1
+
+        while j < len(R):
+            arr[k] = R[j]
+            j += 1
+            k += 1
+
+def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)
+
+# Timing functions
+def measure_time(sort_function, arr):
+    start_time = time.time()
+    if sort_function == quick_sort:
+        sort_function(arr[:])  # Quick sort returns a new list
+    else:
+        sort_function(arr)
+    return time.time() - start_time
+
+# Generate input sizes and data
+small_sizes = range(5, 51, 5)
+large_sizes = [1000, 5000, 10000]
+small_inputs = {size: [random.sample(range(100), size) for _ in range(5)] for size in small_sizes}
+large_inputs = {size: [random.sample(range(100000), size) for _ in range(5)] for size in large_sizes}
+
+# Algorithms to test
+algorithms = [bubble_sort, insertion_sort, merge_sort, quick_sort]
+algorithm_names = ["Bubble Sort", "Insertion Sort", "Merge Sort", "Quick Sort"]
+
+# Store results
+results = {name: {"small": [], "large": []} for name in algorithm_names}
+
+# Test small inputs
+for size in small_sizes:
+    for alg, name in zip(algorithms, algorithm_names):
+        times = [measure_time(alg, arr[:]) for arr in small_inputs[size]]
+        results[name]["small"].append((size, sum(times) / len(times)))
+
+# Test large inputs
+for size in large_sizes:
+    for alg, name in zip(algorithms, algorithm_names):
+        times = [measure_time(alg, arr[:]) for arr in large_inputs[size]]
+        results[name]["large"].append((size, sum(times) / len(times)))
+
+# Plot results
+def plot_results(results, title, sizes, key):
+    plt.figure(figsize=(10, 6))
+    for name in algorithm_names:
+        data = results[name][key]
+        sizes, times = zip(*data)
+        plt.plot(sizes, times, label=name, marker='o')
+    plt.title(title)
+    plt.xlabel("Input Size")
+    plt.ylabel("Average Time (seconds)")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Plot for small and large inputs
+plot_results(results, "Sorting Algorithms Performance (Small Inputs)", small_sizes, "small")
+plot_results(results, "Sorting Algorithms Performance (Large Inputs)", large_sizes, "large")
